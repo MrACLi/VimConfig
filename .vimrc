@@ -119,7 +119,7 @@ if has("autocmd")
   endfunc
   func PythonConfig()
 	map <F2> :w<CR>:call ModTime()<CR>
- 	map <F9> :w<CR><F2>:!python %<CR>
+ 	map <F9> :w<CR><F2>:!clear<CR>:!python %<CR>
  	let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
  	let g:pydiction_menu_height = 5
  	set shiftwidth=4
