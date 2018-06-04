@@ -38,7 +38,12 @@ set shiftwidth=4
 set noexpandtab
 set nu
 set cindent
+set wildmenu
 language time en_US.utf8
+let g:solarized_termcolors=256
+let g:solarized_termtrans=1
+set background=dark
+colorscheme solarized
 
 " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
 " let &guioptions = substitute(&guioptions, "t", "", "g")
@@ -88,9 +93,9 @@ if has("autocmd")
 
   au BufRead,BufNewFile *.c exec ":call CConfig()"
   func CConfig()
-	  map <F2> <Esc>:w<CR>
-	  map <F9> <Esc>:w<CR>:!gcc % -o %:r<CR>
-	  map <F10> <Esc>:!./%:r<CR>
+	  map <F2> :w<CR>
+	  map <F9> :w<CR>:silent !clear<CR>:w<CR>:!gcc % -o %:r<CR>
+	  map <F10> :silent !clear<CR>:silent !gcc --version<CR>:silent !date<CR>:!./%:r<CR>
   endfunc
   autocmd BufRead *.py exec ":call PythonConfig()"
   autocmd BufNewFile *.py exec ":call PythonConfig()" 
@@ -119,7 +124,7 @@ if has("autocmd")
   endfunc
   func PythonConfig()
 	map <F2> :w<CR>:call ModTime()<CR>
- 	map <F9> :w<CR><F2>:!clear<CR>:!python %<CR>
+ 	map <F9> <F2>:silent !clear<CR>:w<CR>:silent !python --version<CR>:silent !date<CR>:!python %<CR>
  	let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
  	let g:pydiction_menu_height = 5
  	set shiftwidth=4
