@@ -118,9 +118,8 @@ if has("autocmd")
 	  call cursor(11, 1)
   endfunc
   func PythonConfig()
-	let $LANG = 'en'
-	map <F2> <Esc>:w<CR><Esc>:call ModTime()<CR>
- 	map <F9> <Esc>:w<CR><F2><Esc>:!python3 %<CR>
+	map <F2> :w<CR>:call ModTime()<CR>
+ 	map <F9> :w<CR><F2>:!python %<CR>
  	let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
  	let g:pydiction_menu_height = 5
  	set shiftwidth=4
