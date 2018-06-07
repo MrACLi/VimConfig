@@ -11,17 +11,33 @@
 
 " When started as "evim", evim.vim will already have done these settings.
 if v:progname =~? "evim"
-  finish
+	finish
 endif
 
 " Use Vim settings, rather than Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
-filetype plugin on
+" Vundle installation
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" 让vundle管理插件版本,必须
+Plugin 'VundleVim/Vundle.vim'
+" 添加自动完成脚本
+Plugin 'Valloric/YouCompleteMe'
+" 自动补全括号脚本
+Bundle 'jiangmiao/auto-pairs'
+" Airline 主题
+Plugin 'vim-airline/vim-airline'
+call vundle#end()  " 所有插件必须在该行之前
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-
+" let g:ycm_server_python_interpreter='/home/mracli/anaconda3/bin/python'
+let g:ycm_server_python_interpreter='python'
+let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
+let g:ycm_python_binary_path = 'python'
 "if has("vms")
 "  set nobackup		" do not keep a backup file, use versions instead
 "else
@@ -57,82 +73,84 @@ inoremap <C-U> <C-G>u<C-U>
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
-  set mouse=a
+	set mouse=a
 endif
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 if &t_Co > 2 || has("gui_running")
-  syntax on
-  set nohlsearch
+	syntax on
+	set	nohlsearch
 endif
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
 
-  " Enable file type detection.
-  " Use the default filetype settings, so that mail gets 'tw' set to 72,
-  " 'cindent' is on in C files, etc.
-  " Also load indent files, to automatically do language-dependent indenting.
-  filetype plugin indent on
+	" Enable file type detection.
+	" Use the default filetype settings, so that mail gets 'tw' set to 72,
+	" 'cindent' is on in C files, etc.
+	" Also load indent files, to automatically do language-dependent indenting.
+	filetype plugin indent on
 
-  " Put these in an autocmd group, so that we can delete them easily.
-  augroup vimrcEx
-  au!
+	" Put these in an autocmd group, so that we can delete them easily.
+	augroup vimrcEx
+	au!
 
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
+	" For all text files set 'textwidth' to 78 characters.
+	autocmd FileType text setlocal textwidth=78
 
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  autocmd BufReadPost *
-    \ if line("'\"") >= 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
+	" When editing a file, always jump to the last known cursor position.
+	" Don't do it when the position is invalid or when inside an event handler
+	" (happens when dropping a file on gvim).
+	autocmd BufReadPost *
+	  \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+	  \   exe "normal! g`\"" |
+	  \ endif
 
-  au BufRead,BufNewFile *.c exec ":call CConfig()"
-  func CConfig()
+	au BufRead,BufNewFile *.c exec ":call CConfig()"
+	func CConfig()
 	  map <F2> :w<CR>
-	  map <F9> :w<CR>:silent !clear<CR>:w<CR>:!gcc % -o %:r<CR>
+	  map <F9> :w<CR>:!gcc % -o %:r<CR>
 	  map <F10> :silent !clear<CR>:silent !gcc --version<CR>:silent !date<CR>:!./%:r<CR>
-  endfunc
-  autocmd BufRead *.py exec ":call PythonConfig()"
-  autocmd BufNewFile *.py exec ":call PythonConfig()" 
-  autocmd BufNewFile *.py exec ":call PythonComment()" 
-  func ModTime()
+	  autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+	  autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+	endfunc
+	autocmd BufRead *.py exec ":call PythonConfig()"
+	autocmd BufNewFile *.py exec ":call PythonConfig()"
+	autocmd BufNewFile *.py exec ":call PythonComment()"
+	func ModTime()
 	  let save_cursor = getcurpos()[1:]
 	  if(search('Mod Time'))
-		  call setline('.', "#   Mod Time		:".strftime("%c")."")
+	  call setline('.', "#   Mod Time		:".strftime("%c")."")
 	  endif
 	  call cursor(save_cursor)
 	  unlet save_cursor
-  endfunc
-  func PythonComment()
-	  call setline(1, "#********************************************************")   
-	  call setline(2, "#   Copyright (C) ".strftime("%Y")." All rights reserved.")  
-	  call setline(3, "#   ")   
-	  call setline(4, "#   Filename		:".expand("%:t")."")   
-	  call setline(5, "#   Author		:mracli@qq.com")  
-	  call setline(6, "#   Mod Time		:".strftime("%c")."")   
-	  call setline(7, "#   Create Date		:".strftime("%c")."")   
-	  call setline(8, "#   Describe		:None")   
-	  call setline(9, "#")  
-	  call setline(10, "#*******************************************************/")   
+	endfunc
+	func PythonComment()
+	  call setline(1, "#********************************************************")
+	  call setline(2, "#   Copyright (C) ".strftime("%Y")." All rights reserved.")
+	  call setline(3, "#")
+	  call setline(4, "#   Filename		:".expand("%:t")."")
+	  call setline(5, "#   Author		:mracli@qq.com")
+	  call setline(6, "#   Mod Time		:".strftime("%c")."")
+	  call setline(7, "#   Create Date		:".strftime("%c")."")
+	  call setline(8, "#   Describe		:None")
+	  call setline(9, "#")
+	  call setline(10, "#*******************************************************/")
 	  call setline(11, " ")
 	  call cursor(11, 1)
-  endfunc
-  func PythonConfig()
-	map <F2> :w<CR>:call ModTime()<CR>
- 	map <F9> <F2>:silent !clear<CR>:w<CR>:silent !python --version<CR>:silent !date<CR>:!python %<CR>
- 	let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
- 	let g:pydiction_menu_height = 5
- 	set shiftwidth=4
- 	set expandtab
- 	set autoindent
- 	set fileformat=unix
-  endfunc
-  augroup END
+	endfunc
+	func PythonConfig()
+	  map <F2> :call ModTime()<CR>:w<CR>
+	  map <F9> <F2>:silent !clear<CR>:w<CR>:silent !python --version<CR>:silent !date<CR>:!python %<CR>
+	  set shiftwidth=4
+	  set expandtab
+	  set autoindent
+	  set fileformat=unix
+	  autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+	  autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+	endfunc
+	augroup END
 
 else
 
@@ -145,7 +163,7 @@ endif " has("autocmd")
 " Only define it when not defined already.
 if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
+			\ | wincmd p | diffthis
 endif
 
 if has('langmap') && exists('+langnoremap')
